@@ -11,15 +11,14 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    name: Deploy to ${{ github.ref_name }}
+
     env:
       DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
       DATABRICKS_HTTP_PATH: ${{ secrets.DATABRICKS_HTTP_PATH }}
       DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-    
-    name: Deploy to ${{ env.ENV_NAME }}
-    
-    steps:
 
+    steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
