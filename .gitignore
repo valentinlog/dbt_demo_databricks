@@ -3,7 +3,7 @@ target/
 dbt_packages/
 logs/
 dbt_internal_packages/
-profile.yml
+profiles.yml
 dbt_modules/
 .vscode/
 
