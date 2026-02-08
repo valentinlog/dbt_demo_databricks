@@ -11,19 +11,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
-    # Map branch name to environment name
     env:
-      ENV_NAME: ${{ github.ref_name == 'main' && 'prod' || github.ref_name }}
-
       DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
       DATABRICKS_HTTP_PATH: ${{ secrets.DATABRICKS_HTTP_PATH }}
       DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-
-    # Display friendly name in GitHub Actions UI
-    name: Deploy to ${{ env.ENV_NAME }}
-
-    # Attach to GitHub Environment (dev / test / prod)
-    environment: ${{ env.ENV_NAME }}
 
     steps:
       - name: Checkout repository
@@ -43,4 +34,4 @@ jobs:
         run: dbt deps --profiles-dir .
 
       - name: Run dbt build
-        run: dbt build --target $ENV_NAME --profiles-dir .
+        run: dbt build --target ${{ github.ref_name }} --profiles-dir .
