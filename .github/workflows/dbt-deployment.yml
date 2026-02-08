@@ -1,0 +1,36 @@
+name: dbt Databricks Deployment
+
+on:
+  push:
+    branches:
+      - dev
+      - test
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_HTTP_PATH: ${{ secrets.DATABRICKS_HTTP_PATH }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dbt
+        run: |
+          pip install --upgrade pip
+          pip install dbt-databricks
+
+      - name: Install dependencies
+        run: dbt deps --profiles-dir .
+
+      - name: Run dbt build
+        run: dbt build --target ${{ github.ref_name }} --profiles-dir .

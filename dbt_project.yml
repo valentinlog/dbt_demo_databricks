@@ -1,0 +1,49 @@
+# Name your project! Project names should contain only lowercase characters
+# and underscores. A good package name should reflect your organization's
+# name or the intended use of these models
+name: 'dbt_sales_db'
+version: '1.0.0'
+
+# This setting configures which "profile" dbt uses for this project.
+profile: 'dbt_sales_db'
+
+vars:
+  surrogate_key_treat_nulls_as_empty_strings: true
+  payment_type_values: [1, 2, 3, 4, 5, 6]
+flags:
+  use_materialization_v2: true
+
+# These configurations specify where dbt should look for different types of files.
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:         # directories to be removed by `dbt clean`
+  - "target"
+  - "dbt_packages"
+
+# Configuring models
+# Full documentation: https://docs.getdbt.com/docs/configuring-models
+models:
+  dbt_sales_db:
+    +schema: raw
+    +materialized: table
+
+    010_bronze:
+      +schema: bronze
+      +materialized: table
+
+    020_silver:
+      +schema: silver
+      +materialized: table
+
+    030_gold:
+      +schema: gold
+      +materialized: table
+
+seeds:
+  dbt_sales_db:
+    +schema: raw
