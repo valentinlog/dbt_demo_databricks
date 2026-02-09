@@ -5,11 +5,13 @@ on:
     branches:
       - dev
       - test
-      - main
+      - prod
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
+    name: Deploy to ${{ github.ref_name }}
 
     env:
       DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
