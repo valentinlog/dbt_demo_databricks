@@ -1,9 +1,0 @@
-# databricks.yml
-# Root bundle file for deploying workflows from the 'workflow/' folder
-
-name: my-databricks-workflows
-
-# No tasks here because the workflows are defined in the 'workflow/' folder
-tasks: []
-
-# Optional default cluster configuration for workflows (can be adjusted as needed)
