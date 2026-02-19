@@ -46,7 +46,7 @@ jobs:
   # 2️⃣ Deploy Databricks Workflows (CD)
   # ---------------------------
   deploy-workflow:
-    needs: dbt-build   # only runs if dbt succeeds
+    needs: dbt-build
     runs-on: ubuntu-latest
     name: Deploy Databricks Workflows
 
@@ -63,8 +63,12 @@ jobs:
           curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | bash
           echo "$HOME/.databricks/bin" >> $GITHUB_PATH
 
+      - name: List workflow folder contents
+        run: ls -la workflows
+
       - name: Deploy workflows from folder
         run: |
+          # CLI v3: deploy folder as bundle, no databricks.yml required
           cd workflows
           DATABRICKS_HOST="${{ secrets.DATABRICKS_HOST }}" \
           DATABRICKS_TOKEN="${{ secrets.DATABRICKS_TOKEN }}" \
