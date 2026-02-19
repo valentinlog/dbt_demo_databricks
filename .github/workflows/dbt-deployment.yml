@@ -65,7 +65,7 @@ jobs:
 
       - name: Deploy workflows from folder
         run: |
-          cd workflow
+          cd workflows
           DATABRICKS_HOST="${{ secrets.DATABRICKS_HOST }}" \
           DATABRICKS_TOKEN="${{ secrets.DATABRICKS_TOKEN }}" \
           databricks bundle deploy
