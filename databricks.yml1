@@ -7,8 +7,3 @@ name: my-databricks-workflows
 tasks: []
 
 # Optional default cluster configuration for workflows (can be adjusted as needed)
-clusters:
-  - label: default
-    num_workers: 2
-    spark_version: "13.2.x-scala2.12"
-    node_type_id: "i3.xlarge"

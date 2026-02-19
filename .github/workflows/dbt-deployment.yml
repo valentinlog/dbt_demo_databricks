@@ -68,4 +68,4 @@ jobs:
           # CLI v3 uses environment variables for auth
           DATABRICKS_HOST="${{ secrets.DATABRICKS_HOST }}" \
           DATABRICKS_TOKEN="${{ secrets.DATABRICKS_TOKEN }}" \
-          databricks bundle deploy -t ${{ github.ref_name }}
+          databricks bundle deploy --path workflow -t default
