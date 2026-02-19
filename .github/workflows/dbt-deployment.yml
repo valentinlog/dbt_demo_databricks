@@ -46,9 +46,13 @@ jobs:
   # 2️⃣ Deploy Workflow YAML (CD)
   # ---------------------------
   deploy-workflow:
-    needs: dbt-build   # 👈 Only runs if dbt succeeds
+    needs: dbt-build   # Only runs if dbt succeeds
     runs-on: ubuntu-latest
     name: Deploy Workflow - ${{ github.ref_name }}
+
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
 
     steps:
       - name: Checkout repository
@@ -59,14 +63,21 @@ jobs:
           curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | bash
           echo "$HOME/.databricks/bin" >> $GITHUB_PATH
 
-      - name: Authenticate to Databricks
+      - name: Authenticate to Databricks (CLI v3)
         run: |
-          databricks auth login \
-            --host "${{ secrets.DATABRICKS_HOST }}" \
-            --token "${{ secrets.DATABRICKS_TOKEN }}"
+          # CLI v3 uses environment variables instead of --token
+          DATABRICKS_HOST="${{ secrets.DATABRICKS_HOST }}" \
+          DATABRICKS_TOKEN="${{ secrets.DATABRICKS_TOKEN }}" \
+          databricks workspace ls /
 
       - name: Validate workflow bundle
-        run: databricks bundle validate -t ${{ github.ref_name }}
+        run: |
+          DATABRICKS_HOST="${{ secrets.DATABRICKS_HOST }}" \
+          DATABRICKS_TOKEN="${{ secrets.DATABRICKS_TOKEN }}" \
+          databricks bundle validate -t ${{ github.ref_name }}
 
       - name: Deploy workflow bundle
-        run: databricks bundle deploy -t ${{ github.ref_name }}
+        run: |
+          DATABRICKS_HOST="${{ secrets.DATABRICKS_HOST }}" \
+          DATABRICKS_TOKEN="${{ secrets.DATABRICKS_TOKEN }}" \
+          databricks bundle deploy -t ${{ github.ref_name }}
