@@ -1,0 +1,14 @@
+# databricks.yml
+# Root bundle file for deploying workflows from the 'workflow/' folder
+
+name: my-databricks-workflows
+
+# No tasks here because the workflows are defined in the 'workflow/' folder
+tasks: []
+
+# Optional default cluster configuration for workflows (can be adjusted as needed)
+clusters:
+  - label: default
+    num_workers: 2
+    spark_version: "13.2.x-scala2.12"
+    node_type_id: "i3.xlarge"
