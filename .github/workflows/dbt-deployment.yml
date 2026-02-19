@@ -65,10 +65,10 @@ jobs:
 
       - name: Authenticate to Databricks (CLI v3)
         run: |
-          # CLI v3 uses environment variables instead of --token
+          # CLI v3 uses environment variables for authentication
           DATABRICKS_HOST="${{ secrets.DATABRICKS_HOST }}" \
           DATABRICKS_TOKEN="${{ secrets.DATABRICKS_TOKEN }}" \
-          databricks workspace ls /
+          databricks workspace list /
 
       - name: Validate workflow bundle
         run: |
