@@ -8,10 +8,13 @@ on:
       - prod
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
 
-    name: Deploy to ${{ github.ref_name }}
+  # ---------------------------
+  # 1️⃣ Run dbt (CI)
+  # ---------------------------
+  dbt-build:
+    runs-on: ubuntu-latest
+    name: Run dbt - ${{ github.ref_name }}
 
     env:
       DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
@@ -37,3 +40,33 @@ jobs:
 
       - name: Run dbt build
         run: dbt build --target ${{ github.ref_name }} --profiles-dir .
+
+
+  # ---------------------------
+  # 2️⃣ Deploy Workflow YAML (CD)
+  # ---------------------------
+  deploy-workflow:
+    needs: dbt-build   # 👈 Only runs if dbt succeeds
+    runs-on: ubuntu-latest
+    name: Deploy Workflow - ${{ github.ref_name }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Databricks CLI
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | bash
+          echo "$HOME/.databricks/bin" >> $GITHUB_PATH
+
+      - name: Authenticate to Databricks
+        run: |
+          databricks auth login \
+            --host "${{ secrets.DATABRICKS_HOST }}" \
+            --token "${{ secrets.DATABRICKS_TOKEN }}"
+
+      - name: Validate workflow bundle
+        run: databricks bundle validate -t ${{ github.ref_name }}
+
+      - name: Deploy workflow bundle
+        run: databricks bundle deploy -t ${{ github.ref_name }}
