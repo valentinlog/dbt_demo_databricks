@@ -40,3 +40,24 @@ jobs:
 
       - name: Run dbt build
         run: dbt build --target ${{ github.ref_name }} --profiles-dir .
+
+  # ---------------------------
+  # 2️⃣ Deploy DAB workflow (CD)
+  # ---------------------------
+  deploy-bundle:
+    runs-on: ubuntu-latest
+    name: Deploy Databricks Bundle - ${{ github.ref_name }}
+    needs: dbt-build  # only deploy if dbt build passes
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Databricks CLI
+        uses: databricks/setup-cli@main
+
+      - name: Deploy bundle
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: databricks bundle deploy --target ${{ github.ref_name }}
