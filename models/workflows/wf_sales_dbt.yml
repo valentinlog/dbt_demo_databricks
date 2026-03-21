@@ -1,16 +1,17 @@
 resources:
   jobs:
     wf_sales_dbt_dev:
-      name: wf_sales_dbt_${{ github.ref_name }}
+      name: wf_sales_dbt_${{ github.ref_name | replace("/", "_") | replace("-", "_") }}
       tasks:
         - task_key: job_sales_dbt
           dbt_task:
-            project_directory: ""
+            project_directory: "."
             commands:
               - dbt deps
-              - dbt run
+              - dbt run --target dev --select state:modified+
+              - dbt test --target dev --select state:modified+
             warehouse_id: 60d2f96239fe8610
-            catalog: sales_${{ github.ref_name }}
+            catalog: sales_${{ github.ref_name | replace("/", "_") | replace("-", "_") }}
             source: GIT
           environment_key: dbt-default
       git_source:
@@ -20,9 +21,6 @@ resources:
       queue:
         enabled: true
       environments:
-        - environment_key: Default
-          spec:
-            environment_version: "4"
         - environment_key: dbt-default
           spec:
             dependencies:
