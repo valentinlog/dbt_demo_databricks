@@ -11,3 +11,6 @@ dbt_modules/
 *.pyc
 __pycache__/
 package-lock.json
+.venv/
+dbt_packages/
+dbt_logs/
