@@ -1,0 +1,22 @@
+bundle:
+  name: sales_dbt_bundle
+
+include:
+  - resources/*.yml
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: ${var.DATABRICKS_HOST}
+
+  test:
+    mode: development
+    workspace:
+      host: ${var.DATABRICKS_HOST}
+
+  prod:
+    mode: production
+    workspace:
+      host: ${var.DATABRICKS_HOST}
