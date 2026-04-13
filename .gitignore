@@ -10,3 +10,7 @@ dbt_modules/
 .DS_Store
 *.pyc
 __pycache__/
+package-lock.json
+.venv/
+dbt_packages/
+dbt_logs/
